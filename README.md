@@ -43,7 +43,7 @@ OrbitalTable=MainTables[0]
 OrbitalTable_Lines=OrbitalTable.findAll("tr")
 ```
 
-#### identifying the records containing date info versus payloads
+#### Identifying the records containing date info versus payloads
 Inspecting the table lines shows that we can categorize the lines based on the number of "td" tags in each line. The lines with 5 td
 are actually the first record of each date launches (alco containing the actual date), and the records with 6 td contain payloads info.
 
