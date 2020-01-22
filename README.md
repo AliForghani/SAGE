@@ -109,15 +109,8 @@ FinalSummary=[]
 for month , monthDays in MonthDurDict.items():
     for dayNo in range(1,monthDays+1):
         This_Day=str(dayNo)+" "+ month
-        if This_Day in Date_Outcome:
-            ThisDateValue=0
-            ThisKeyStatuss=Date_Outcome[This_Day]
-            for status in ThisKeyStatuss:
-                if status in ['Successful', 'Operational', 'En Route']:
-                    ThisDateValue=ThisDateValue+1
-
-            # pd.Series(ThisKeyStatuss).isin(['Successful', 'Operational', 'En Route']).any()
-            FinalSummary.append([This_Day, ThisDateValue])
+        if This_Day in DatesLaunchCount_Dict:
+            FinalSummary.append([This_Day, DatesLaunchCount_Dict[This_Day]])
         else:
             FinalSummary.append([This_Day,0])
 
