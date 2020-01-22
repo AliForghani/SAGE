@@ -46,19 +46,20 @@ OrbitalTable_Lines=OrbitalTable.findAll("tr")
 #### Identifying the records containing date info versus payloads
 Inspecting the table lines shows that we can categorize the lines based on the number of "td" tags in each line. The lines with 5 td
 are actually the first record of each date launches (containing the actual date), and the records with 6 td contain its payloads info.
-
+##### First, record the td number of all lines
 ```python
 td_Nos=np.empty(len(OrbitalTable_Lines),dtype=int)
 for lineId, line in enumerate(OrbitalTable_Lines):
     td_Nos[lineId] = len(line.findAll("td"))
-
-#here, we identify the line indices of the fist record of each date launches
+```
+##### Then identify the line indices of the records with td number=5 (the records containing date string)
+```python
 FirstRecords_Index = np.where(td_Nos == 5)[0]
 
 ```
 
 
-#### Making a dictionary for dates and their outcomes
+#### Making a dictionary for dates and their accepted launches
 
 ```python
 def GetDateData(Index):
@@ -68,21 +69,36 @@ def GetDateData(Index):
     Actualdate = Actualdate.split("[")[0]
     return Actualdate
 
-Date_Outcome={}
+#first make a table for launch dates and their outcome status (accepted or not)
+LaunchesSummmary=[]
 for i in range(len(FirstRecords_Index)):
+    OutcomeStatus="Rejected" #by default we assume the status is "Rejected"
     StartIndex=FirstRecords_Index[i]
-    if i!=len(FirstRecords_Index)-1:
-        EndIndex=FirstRecords_Index[i+1]
-    else:
-        EndIndex=len(td_Nos)
-
     Actualdate=GetDateData(StartIndex)
-    ThisDateOutcomes=[]
-    for j in range(EndIndex-StartIndex-1):
-        td_No = OrbitalTable_Lines[StartIndex+j+1].findAll("td")
-        if len(td_No)==6:
-            ThisDateOutcomes.append( td_No[5].text.strip())
-    Date_Outcome[Actualdate]=ThisDateOutcomes
+
+    if i != len(FirstRecords_Index) - 1:
+        EndIndex = FirstRecords_Index[i + 1]
+    else:
+        EndIndex = len(td_Nos)
+    for j in range(EndIndex - StartIndex - 1):
+        td_No = OrbitalTable_Lines[StartIndex + j + 1].findAll("td")
+        if len(td_No) == 6:
+            Outcome=td_No[5].text.strip()
+            if Outcome in ['Successful', 'Operational', 'En Route']:
+                OutcomeStatus="Accepted"
+                break
+
+    LaunchesSummmary.append([Actualdate, OutcomeStatus])
+LaunchesSummaryDF=pd.DataFrame(LaunchesSummmary, columns=[ "Date", "OutcomeStatus"])
+
+#select the launches with "Accepted" status
+AcceptedLaunchesDF=LaunchesSummaryDF[LaunchesSummaryDF["OutcomeStatus"]=="Accepted"]
+
+#make a pandas groupby for launch dates, so we can easily count the total number of accepted launches for each date
+DatesLaunchCount=AcceptedLaunchesDF.groupby("Date").size()
+
+#convert the groupby series to a dictionary, in which keys are the dates and values are the number of accepted launches.
+DatesLaunchCount_Dict=DatesLaunchCount.to_dict()
 ```
 
 
