@@ -46,16 +46,15 @@ OrbitalTable_Lines=OrbitalTable.findAll("tr")
 #### Identifying the records containing date info versus payloads
 Inspecting the table lines shows that we can categorize the lines based on the number of "td" tags in each line. The lines with 5 td
 are actually the first record of each date launches (containing the actual date), and the records with 6 td contain its payloads info.
-##### First, record the td number of all lines
+
 ```python
+# First, record the td number of all lines
 td_Nos=np.empty(len(OrbitalTable_Lines),dtype=int)
 for lineId, line in enumerate(OrbitalTable_Lines):
     td_Nos[lineId] = len(line.findAll("td"))
-```
-##### Then identify the line indices of the records with td number=5 (the records containing date string)
-```python
-FirstRecords_Index = np.where(td_Nos == 5)[0]
 
+# Then identify the line indices of the records with td number=5 (the records containing date string)
+FirstRecords_Index = np.where(td_Nos == 5)[0]
 ```
 
 
