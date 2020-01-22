@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 from bs4 import BeautifulSoup as soup
 
-def GetDateData(Index):
+def GetActualDate(Index):
     Dateline = OrbitalTable_Lines[Index]
     DataNoInThisLine=Dateline.findAll("td")
     Actualdate=DataNoInThisLine[0].span.text
@@ -35,7 +35,7 @@ LaunchesSummmary=[]
 for i in range(len(FirstRecords_Index)):
     OutcomeStatus="Rejected" #by default we assume the status is "Rejected"
     StartIndex=FirstRecords_Index[i]
-    Actualdate=GetDateData(StartIndex)
+    Actualdate=GetActualDate(StartIndex)
 
     if i != len(FirstRecords_Index) - 1:
         EndIndex = FirstRecords_Index[i + 1]
