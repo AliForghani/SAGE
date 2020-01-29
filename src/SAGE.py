@@ -74,5 +74,5 @@ for month , monthDays in MonthDurDict.items():
             FinalSummary.append([This_Day,0])
 
 FinalSummaryDF=pd.DataFrame(FinalSummary, columns=["Date", "Value"])
-FinalSummaryDF.to_csv("SAGE_Results.csv", index=False)
+FinalSummaryDF.to_csv("../output/SAGE_Results.csv", index=False)
 
